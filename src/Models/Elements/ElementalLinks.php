@@ -52,7 +52,7 @@ class ElementalLinks extends ElementContent
                     'ElementLinks',
                     'Links',
                     $this
-                )
+                )->setSortColumn('Sort')
             ]
         );
 
