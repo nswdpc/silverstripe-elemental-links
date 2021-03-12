@@ -3,9 +3,10 @@
 namespace NSWDPC\Elemental\Models\LinksBlock;
 
 use DNADesign\Elemental\Models\ElementContent;
-use gorriecoe\Link\Models\Link;
-use gorriecoe\LinkField\LinkField;
 use SilverStripe\Forms\FieldList;
+use gorriecoe\LinkField\LinkField;
+use SilverStripe\Forms\DropdownField;
+use gorriecoe\Link\Models\Link;
 
 class ElementalLinks extends ElementContent
 {
@@ -23,6 +24,16 @@ class ElementalLinks extends ElementContent
     private static $plural_name = 'Links Elements';
 
     private static $inline_editable = false;
+
+    private static $subtypes = [
+        'cards' => 'Three column cards',
+        'feature-tile' => 'Feature tile',
+        'link-list' => 'Link list'
+    ];
+
+    private static $db = [
+        'Subtype' => 'Varchar'
+    ];
 
     private static $many_many = [
         'ElementLinks' => Link::class
@@ -48,13 +59,19 @@ class ElementalLinks extends ElementContent
         $fields->addFieldsToTab(
             'Root.Main',
             [
+                DropdownField::create(
+                    'Subtype',
+                    _t(__CLASS__ . '.LISTTYPE','List type'),
+                    $this->owner->config()->subtypes
+                ),
                 LinkField::create(
                     'ElementLinks',
-                    'Links',
+                    _t(__CLASS__ . '.LINKS','Links'),
                     $this
                 )->setSortColumn('Sort')
             ]
         );
+
 
         return $fields;
     }
