@@ -113,8 +113,9 @@ class ElementalLinks extends BaseElement
     /**
      * Get the grid configurator model from nswdpc/silverstripe-grid-helpers module
      */
-    protected function getConfigurator() : Configuration {
-        return Injector::inst()->get( Configuration::class );
+    protected function getConfigurator() : Configuration
+    {
+        return Injector::inst()->get(Configuration::class);
     }
 
     /**
@@ -140,7 +141,7 @@ class ElementalLinks extends BaseElement
                     'ElementLinks',
                     _t(
                         __CLASS__ . '.LINKS',
-                       'Links'
+                        'Links'
                     ),
                     $this
                 )->setSortColumn('Sort')
@@ -152,7 +153,7 @@ class ElementalLinks extends BaseElement
             'Subtype',
             _t(
                 __CLASS__ . '.LISTTYPE',
-               'List type'
+                'List type'
             ),
             $this->owner->config()->get('subtypes')
         )->setEmptyString('none');
@@ -164,7 +165,7 @@ class ElementalLinks extends BaseElement
             'CardColumns',
             _t(
                 __CLASS__ . '.CARDCOLUMNS',
-               'Card columns'
+                'Card columns'
             ),
             $options
         )->setEmptyString('none');
@@ -175,7 +176,7 @@ class ElementalLinks extends BaseElement
             'CardStyle',
             _t(
                 __CLASS__ . '.CARDSTYLE',
-               'Card style'
+                'Card style'
             ),
             $this->owner->config()->get('card_styles')
         )->setEmptyString('none');
@@ -185,7 +186,8 @@ class ElementalLinks extends BaseElement
          * via ElementChildGridExtension
          */
         $fields->addFieldsToTab(
-            'Root.Display', [
+            'Root.Display',
+            [
                 $subType,
                 $cardColumns,
                 $cardStyle
@@ -194,5 +196,4 @@ class ElementalLinks extends BaseElement
 
         return $fields;
     }
-
 }

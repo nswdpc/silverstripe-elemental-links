@@ -27,8 +27,9 @@ class ElementalLinksTest extends SapphireTest
     /**
      * Verify basic card columns handling
      */
-    public function testCardColumns() {
-        $element = $this->objFromFixture( ElementalLinks::class, 'four' );
-        $this->assertEquals(4, $element->CardColumns );
+    public function testCardColumns()
+    {
+        $element = $this->objFromFixture(ElementalLinks::class, 'four');
+        $this->assertEquals(4, $element->CardColumns);
     }
 }
