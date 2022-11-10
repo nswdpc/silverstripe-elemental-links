@@ -1,3 +1,6 @@
 ---
 Name: nswdpc-elemental-links
 ---
+NSWDPC\Elemental\Models\LinksBlock\ElementalLinks:
+  extensions:
+    childgrid: 'NSWDPC\GridHelper\Extensions\ElementChildGridExtension'

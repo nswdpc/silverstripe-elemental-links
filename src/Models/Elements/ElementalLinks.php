@@ -5,6 +5,8 @@ namespace NSWDPC\Elemental\Models\LinksBlock;
 use DNADesign\Elemental\Models\BaseElement;
 use gorriecoe\Link\Models\Link;
 use gorriecoe\LinkField\LinkField;
+use NSWDPC\GridHelper\Models\Configuration;
+use Silverstripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
@@ -12,6 +14,9 @@ use UncleCheese\DisplayLogic\Forms\Wrapper;
 
 /**
  * Links element
+ *
+ * CardColumns functionality is provided by
+ * NSWDPC\GridHelper\Extensions\ElementChildGridExtension
  *
  * @author Mark
  * @author James
@@ -66,15 +71,6 @@ class ElementalLinks extends BaseElement
     /**
      * @var array
      */
-    private static $card_columns = [
-        '2' => 'Two',
-        '3' => 'Three',
-        '4' => 'Four',
-    ];
-
-    /**
-     * @var array
-     */
     private static $card_styles = [
         'title' => 'Title only',
         'title-abstract' => 'Title and abstract',
@@ -87,7 +83,6 @@ class ElementalLinks extends BaseElement
     private static $db = [
         'HTML' => 'HTMLText',
         'Subtype' => 'Varchar(64)',
-        'CardColumns' => 'Varchar(64)',
         'CardStyle' => 'Varchar(64)',
     ];
 
@@ -116,6 +111,13 @@ class ElementalLinks extends BaseElement
     }
 
     /**
+     * Get the grid configurator model from nswdpc/silverstripe-grid-helpers module
+     */
+    protected function getConfigurator() : Configuration {
+        return Injector::inst()->get( Configuration::class );
+    }
+
+    /**
      * @inheritdoc
      */
     public function getCMSFields()
@@ -123,36 +125,6 @@ class ElementalLinks extends BaseElement
         $fields = parent::getCmsFields();
 
         $fields->removeByName(['ElementLinks']);
-
-        $subType = DropdownField::create(
-            'Subtype',
-            _t(
-                __CLASS__ . '.LISTTYPE',
-               'List type'
-            ),
-            $this->owner->config()->get('subtypes')
-        )->setEmptyString('none');
-
-        $cardColumns = DropdownField::create(
-            'CardColumns',
-            _t(
-                __CLASS__ . '.CARDCOLUMNS',
-               'Card columns'
-            ),
-            $this->owner->config()->get('card_columns')
-        )->setEmptyString('none');
-
-        $cardColumns->displayIf('Subtype')->isEqualTo('cards');
-
-        $cardStyle = DropdownField::create(
-            'CardStyle',
-            _t(
-                __CLASS__ . '.CARDSTYLE',
-               'Card style'
-            ),
-            $this->owner->config()->get('card_styles')
-        )->setEmptyString('none');
-        $cardStyle->displayIf('Subtype')->isEqualTo('cards');
 
         $fields->addFieldsToTab(
             'Root.Main',
@@ -163,10 +135,7 @@ class ElementalLinks extends BaseElement
                         __CLASS__ . '.HTML',
                         'Content'
                     )
-                )->setRows(6),
-                $subType,
-                $cardColumns,
-                $cardStyle,
+                )->setRows(4),
                 LinkField::create(
                     'ElementLinks',
                     _t(
@@ -178,27 +147,52 @@ class ElementalLinks extends BaseElement
             ]
         );
 
+        // List type selector
+        $subType = DropdownField::create(
+            'Subtype',
+            _t(
+                __CLASS__ . '.LISTTYPE',
+               'List type'
+            ),
+            $this->owner->config()->get('subtypes')
+        )->setEmptyString('none');
+
+        // Card column selection - via ElementChildGridExtension
+        $options = $this->getConfigurator()->config()->get('card_columns');
+        $options = is_array($options) ? array_unique($options) : [];
+        $cardColumns = DropdownField::create(
+            'CardColumns',
+            _t(
+                __CLASS__ . '.CARDCOLUMNS',
+               'Card columns'
+            ),
+            $options
+        )->setEmptyString('none');
+        $cardColumns->displayIf('Subtype')->isEqualTo('cards');
+
+        // Card style selector
+        $cardStyle = DropdownField::create(
+            'CardStyle',
+            _t(
+                __CLASS__ . '.CARDSTYLE',
+               'Card style'
+            ),
+            $this->owner->config()->get('card_styles')
+        )->setEmptyString('none');
+        $cardStyle->displayIf('Subtype')->isEqualTo('cards');
+
+        /**
+         * via ElementChildGridExtension
+         */
+        $fields->addFieldsToTab(
+            'Root.Display', [
+                $subType,
+                $cardColumns,
+                $cardStyle
+            ]
+        );
+
         return $fields;
-    }
-
-    /**
-     * Return column string, by default based off nswds
-     */
-    public function getColumns() : ?string
-    {
-        $columns = $this->owner->CardColumns;
-
-        if ($columns == 2) {
-            return "nsw-col-sm-6";
-        }
-        if ($columns == 3) {
-            return "nsw-col-md-4";
-        }
-        if ($columns == 4) {
-            return "nsw-col-sm-6 nsw-col-md-4 nsw-col-lg-3";
-        }
-
-        return null;
     }
 
 }

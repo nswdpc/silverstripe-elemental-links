@@ -24,7 +24,8 @@
     "require": {
         "dnadesign/silverstripe-elemental": "^4.3.0",
         "gorriecoe/silverstripe-linkfield": "^1",
-        "unclecheese/display-logic": "^2"
+        "unclecheese/display-logic": "^2",
+        "nswdpc/silverstripe-grid-helpers": "^0.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
