@@ -1,0 +1,4 @@
+NSWDPC\Elemental\Models\LinksBlock\ElementalLinks:
+  four:
+    Title: 'four column'
+    CardColumns: '4'

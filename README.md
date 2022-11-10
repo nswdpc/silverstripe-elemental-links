@@ -1,5 +1,11 @@
-# Featured links element for Silverstripe
-Simple list of links
+# Links content block for Silverstripe CMS
+
+Add a list of links via a content block to a page.
+
+## Features
+
++ Add some display choices about how links are presented, for use in your templates
++ Use [gorriecoe/link model](https://github.com/gorriecoe/silverstripe-link) to store links
 
 ## Requirements
 
@@ -7,7 +13,9 @@ See composer.json
 
 ## Installation
 
-```composer require nswdpc/silverstripe-elemental-links```
+```sh
+composer require nswdpc/silverstripe-elemental-links
+```
 
 ## License
 
