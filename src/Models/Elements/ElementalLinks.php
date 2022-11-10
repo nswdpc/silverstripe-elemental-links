@@ -3,10 +3,10 @@
 namespace NSWDPC\Elemental\Models\LinksBlock;
 
 use DNADesign\Elemental\Models\BaseElement;
-use SilverStripe\Forms\FieldList;
-use gorriecoe\LinkField\LinkField;
-use SilverStripe\Forms\DropdownField;
 use gorriecoe\Link\Models\Link;
+use gorriecoe\LinkField\LinkField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
 
