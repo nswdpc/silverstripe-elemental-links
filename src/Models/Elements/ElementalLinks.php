@@ -130,7 +130,7 @@ class ElementalLinks extends BaseElement
                 __CLASS__ . '.LISTTYPE',
                'List type'
             ),
-            $this->owner->config()->subtypes
+            $this->owner->config()->get('subtypes')
         )->setEmptyString('none');
 
         $cardColumns = DropdownField::create(
@@ -139,7 +139,7 @@ class ElementalLinks extends BaseElement
                 __CLASS__ . '.CARDCOLUMNS',
                'Card columns'
             ),
-            $this->owner->config()->card_columns
+            $this->owner->config()->get('card_columns')
         )->setEmptyString('none');
 
         $cardColumns->displayIf('Subtype')->isEqualTo('cards');
@@ -150,7 +150,7 @@ class ElementalLinks extends BaseElement
                 __CLASS__ . '.CARDSTYLE',
                'Card style'
             ),
-            $this->owner->config()->card_styles
+            $this->owner->config()->get('card_styles')
         )->setEmptyString('none');
         $cardStyle->displayIf('Subtype')->isEqualTo('cards');
 
