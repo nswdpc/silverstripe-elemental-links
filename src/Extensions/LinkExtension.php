@@ -18,5 +18,4 @@ class LinkExtension extends DataExtension
     private static $belongs_many_many = [
         'ElementalLinks' => ElementalLinks::class . '.ElementLinks'
     ];
-
 }
