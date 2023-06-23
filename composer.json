@@ -22,10 +22,10 @@
         }
     ],
     "require": {
-        "dnadesign/silverstripe-elemental": "^4.9.0",
-        "gorriecoe/silverstripe-linkfield": "^1",
-        "unclecheese/display-logic": "^2",
-        "nswdpc/silverstripe-grid-helpers": "^0.2"
+        "dnadesign/silverstripe-elemental": "^5",
+        "gorriecoe/silverstripe-linkfield": "*",
+        "unclecheese/display-logic": "^3",
+        "nswdpc/silverstripe-grid-helpers": "^1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
