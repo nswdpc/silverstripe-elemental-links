@@ -23,7 +23,7 @@
     ],
     "require": {
         "dnadesign/silverstripe-elemental": "^5",
-        "gorriecoe/silverstripe-linkfield": "*",
+        "gorriecoe/silverstripe-linkfield": "^1.1",
         "unclecheese/display-logic": "^3",
         "nswdpc/silverstripe-grid-helpers": "^1"
     },
