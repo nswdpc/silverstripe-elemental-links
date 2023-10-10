@@ -10,6 +10,8 @@ use Silverstripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\ORM\ManyManyList;
+use SilverStripe\ORM\UnsavedRelationList;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
 
 /**
@@ -108,6 +110,23 @@ class ElementalLinks extends BaseElement
     public function getType()
     {
         return _t(__CLASS__ . '.BlockType', 'Links');
+    }
+
+    /**
+     * Override default list value returned to ensure sorted by the many_many relation field
+     * @return ManyManyList|UnsavedRelationList
+     */
+    public function ElementLinks() {
+        $links = $this->getManyManyComponents('ElementLinks');
+        $links = $links->sort(["\"ElementalLinks_ElementLinks\".\"Sort\"" => "ASC"]);
+        return $links;
+    }
+
+    /**
+     * Getter for ElementLinks
+     */
+    public function getElementLinks() {
+        return $this->ElementLinks();
     }
 
     /**
