@@ -66,6 +66,7 @@ class ElementalLinks extends BaseElement
      */
     private static $subtypes = [
         'cards' => 'Cards',
+        'carousel' => 'Carousel',
         'feature-tile' => 'Feature tile',
         'link-list' => 'Link list'
     ];
@@ -188,7 +189,9 @@ class ElementalLinks extends BaseElement
             ),
             $options
         )->setEmptyString('none');
-        $cardColumns->displayIf('Subtype')->isEqualTo('cards');
+        $cardColumns->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
 
         // Card style selector
         $cardStyle = DropdownField::create(
@@ -199,7 +202,9 @@ class ElementalLinks extends BaseElement
             ),
             $this->owner->config()->get('card_styles')
         )->setEmptyString('none');
-        $cardStyle->displayIf('Subtype')->isEqualTo('cards');
+        $cardStyle->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
 
         /**
          * via ElementChildGridExtension
