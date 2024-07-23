@@ -119,7 +119,7 @@ class ElementalLinks extends BaseElement
      */
     public function ElementLinks() {
         $links = $this->getManyManyComponents('ElementLinks');
-        $links = $links->sort(["\"ElementalLinks_ElementLinks\".\"Sort\"" => "ASC"]);
+        $links = $links->orderBy("\"ElementalLinks_ElementLinks\".\"Sort\" ASC");
         return $links;
     }
 
