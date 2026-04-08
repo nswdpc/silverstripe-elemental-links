@@ -22,6 +22,11 @@ use UncleCheese\DisplayLogic\Forms\Wrapper;
  *
  * @author Mark
  * @author James
+ * @property ?string $HTML
+ * @property ?string $Subtype
+ * @property ?string $CardStyle
+ * @method \SilverStripe\ORM\ManyManyList<\gorriecoe\Link\Models\Link> ElementLinks()
+ * @mixin \NSWDPC\GridHelper\Extensions\ElementChildGridExtension
  */
 class ElementalLinks extends BaseElement
 {
@@ -29,52 +34,46 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
-    private static $icon = 'font-icon-thumbnails';
+    private static string $icon = 'font-icon-thumbnails';
 
     /**
      * @inheritdoc
      */
-    private static $table_name = 'ElementalLinks';
+    private static string $table_name = 'ElementalLinks';
 
     /**
      * @inheritdoc
      */
-    private static $title = 'Links list';
+    private static string $title = 'Links list';
 
     /**
      * @inheritdoc
      */
-    private static $description = "Display a list of links";
+    private static string $description = "Display a list of links";
 
     /**
      * @inheritdoc
      */
-    private static $singular_name = 'Links Element';
+    private static string $singular_name = 'Links Element';
 
     /**
      * @inheritdoc
      */
-    private static $plural_name = 'Links Elements';
+    private static string $plural_name = 'Links Elements';
 
     /**
      * @inheritdoc
      */
-    private static $inline_editable = false;
+    private static bool $inline_editable = false;
 
-    /**
-     * @var array
-     */
-    private static $subtypes = [
+    private static array $subtypes = [
         'cards' => 'Cards',
         'carousel' => 'Carousel',
         'feature-tile' => 'Feature tile',
         'link-list' => 'Link list'
     ];
 
-    /**
-     * @var array
-     */
-    private static $card_styles = [
+    private static array $card_styles = [
         'title' => 'Title only',
         'title-abstract' => 'Title and abstract',
         'title-image-abstract' => 'Title, image, abstract',
@@ -83,7 +82,7 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
-    private static $db = [
+    private static array $db = [
         'HTML' => 'HTMLText',
         'Subtype' => 'Varchar(64)',
         'CardStyle' => 'Varchar(64)',
@@ -92,14 +91,14 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
-    private static $many_many = [
+    private static array $many_many = [
         'ElementLinks' => Link::class
     ];
 
     /**
      * @inheritdoc
      */
-    private static $many_many_extraFields = [
+    private static array $many_many_extraFields = [
         'ElementLinks' => [
             'Sort' => 'Int'
         ]
@@ -108,9 +107,10 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
+    #[\Override]
     public function getType()
     {
-        return _t(__CLASS__ . '.BlockType', 'Links');
+        return _t(self::class . '.BlockType', 'Links');
     }
 
     /**
@@ -119,8 +119,7 @@ class ElementalLinks extends BaseElement
      */
     public function ElementLinks() {
         $links = $this->getManyManyComponents('ElementLinks');
-        $links = $links->orderBy("\"ElementalLinks_ElementLinks\".\"Sort\" ASC");
-        return $links;
+        return $links->orderBy('"ElementalLinks_ElementLinks"."Sort" ASC');
     }
 
     /**
@@ -141,6 +140,7 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
+    #[\Override]
     public function getCMSFields()
     {
         $fields = parent::getCmsFields();
@@ -153,14 +153,14 @@ class ElementalLinks extends BaseElement
                 HTMLEditorField::create(
                     'HTML',
                     _t(
-                        __CLASS__ . '.HTML',
+                        self::class . '.HTML',
                         'Content'
                     )
                 )->setRows(4),
                 LinkField::create(
                     'ElementLinks',
                     _t(
-                        __CLASS__ . '.LINKS',
+                        self::class . '.LINKS',
                         'Links'
                     ),
                     $this
@@ -172,7 +172,7 @@ class ElementalLinks extends BaseElement
         $subType = DropdownField::create(
             'Subtype',
             _t(
-                __CLASS__ . '.LISTTYPE',
+                self::class . '.LISTTYPE',
                 'List type'
             ),
             $this->owner->config()->get('subtypes')
@@ -181,10 +181,11 @@ class ElementalLinks extends BaseElement
         // Card column selection - via ElementChildGridExtension
         $options = $this->getConfigurator()->config()->get('card_columns');
         $options = is_array($options) ? array_unique($options) : [];
+
         $cardColumns = DropdownField::create(
             'CardColumns',
             _t(
-                __CLASS__ . '.CARDCOLUMNS',
+                self::class . '.CARDCOLUMNS',
                 'Card columns'
             ),
             $options
@@ -197,7 +198,7 @@ class ElementalLinks extends BaseElement
         $cardStyle = DropdownField::create(
             'CardStyle',
             _t(
-                __CLASS__ . '.CARDSTYLE',
+                self::class . '.CARDSTYLE',
                 'Card style'
             ),
             $this->owner->config()->get('card_styles')

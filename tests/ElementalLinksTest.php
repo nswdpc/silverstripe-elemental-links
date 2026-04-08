@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NSWDPC\Elemental\Models\LinksBlock\Tests;
 
 use NSWDPC\Elemental\Models\LinksBlock\ElementalLinks;
@@ -27,7 +29,7 @@ class ElementalLinksTest extends SapphireTest
     /**
      * Verify basic card columns handling
      */
-    public function testCardColumns()
+    public function testCardColumns(): void
     {
         $element = $this->objFromFixture(ElementalLinks::class, 'four');
         $this->assertEquals(4, $element->CardColumns);
