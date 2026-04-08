@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace NSWDPC\Elemental\Models\LinksBlock\Tests;
 
 use NSWDPC\Elemental\Models\LinksBlock\ElementalLinks;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
-use SilverStripe\View\Requirements;
 
 /**
  * Unit test to verify links block handling
@@ -15,7 +13,6 @@ use SilverStripe\View\Requirements;
  */
 class ElementalLinksTest extends SapphireTest
 {
-
     /**
      * @inheritdoc
      */

@@ -15,7 +15,6 @@ use SilverStripe\ORM\DataExtension;
  */
 class LinkExtension extends DataExtension
 {
-
     /**
      * @inheritdoc
      */

@@ -7,12 +7,10 @@ use gorriecoe\Link\Models\Link;
 use gorriecoe\LinkField\LinkField;
 use NSWDPC\GridHelper\Models\Configuration;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\UnsavedRelationList;
-use UncleCheese\DisplayLogic\Forms\Wrapper;
 
 /**
  * Links element
@@ -30,7 +28,6 @@ use UncleCheese\DisplayLogic\Forms\Wrapper;
  */
 class ElementalLinks extends BaseElement
 {
-
     /**
      * @inheritdoc
      */
@@ -117,7 +114,8 @@ class ElementalLinks extends BaseElement
      * Override default list value returned to ensure sorted by the many_many relation field
      * @return ManyManyList|UnsavedRelationList
      */
-    public function ElementLinks() {
+    public function ElementLinks()
+    {
         $links = $this->getManyManyComponents('ElementLinks');
         return $links->orderBy('"ElementalLinks_ElementLinks"."Sort" ASC');
     }
@@ -125,14 +123,15 @@ class ElementalLinks extends BaseElement
     /**
      * Getter for ElementLinks
      */
-    public function getElementLinks() {
+    public function getElementLinks()
+    {
         return $this->ElementLinks();
     }
 
     /**
      * Get the grid configurator model from nswdpc/silverstripe-grid-helpers module
      */
-    protected function getConfigurator() : Configuration
+    protected function getConfigurator(): Configuration
     {
         return Injector::inst()->get(Configuration::class);
     }
