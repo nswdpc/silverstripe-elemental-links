@@ -6,7 +6,7 @@ use DNADesign\Elemental\Models\BaseElement;
 use gorriecoe\Link\Models\Link;
 use gorriecoe\LinkField\LinkField;
 use NSWDPC\GridHelper\Models\Configuration;
-use Silverstripe\Core\Injector\Injector;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
