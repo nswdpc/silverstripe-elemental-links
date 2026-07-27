@@ -21,7 +21,7 @@
         "dnadesign/silverstripe-elemental": "^6",
         "nswdpc/silverstripe-linkfield": "^2",
         "unclecheese/display-logic": "^4",
-        "nswdpc/silverstripe-grid-helpers": "dev-ss6"
+        "nswdpc/silverstripe-grid-helpers": "^2"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.5",
