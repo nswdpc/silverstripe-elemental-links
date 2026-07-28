@@ -46,7 +46,7 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
-    private static string $description = "Display a list of links";
+    private static string $class_description = "Display a list of links";
 
     /**
      * @inheritdoc

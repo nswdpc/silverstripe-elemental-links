@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace NSWDPC\Elemental\Models\LinksBlock;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * Provide reverse association for ElementLinks many_many
  *
  * @author James
  * @method \SilverStripe\ORM\ManyManyList<\NSWDPC\Elemental\Models\LinksBlock\ElementalLinks> ElementalLinks()
- * @extends \SilverStripe\ORM\DataExtension<static>
+ * @extends \SilverStripe\Core\Extension<static>
  */
-class LinkExtension extends DataExtension
+class LinkExtension extends Extension
 {
     /**
      * @inheritdoc
