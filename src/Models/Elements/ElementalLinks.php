@@ -11,8 +11,6 @@ use NSWDPC\GridHelper\Models\Configuration;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\ORM\ManyManyList;
-use SilverStripe\ORM\UnsavedRelationList;
 
 /**
  * Links element
