@@ -10,6 +10,7 @@ use SilverStripe\LinkField\Form\MultiLinkField as CoreMultiLinkField;
 use NSWDPC\GridHelper\Models\Configuration;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
 /**
@@ -84,6 +85,7 @@ class ElementalLinks extends BaseElement
         'HTML' => 'HTMLText',
         'Subtype' => 'Varchar(64)',
         'CardStyle' => 'Varchar(64)',
+        'CardHorizontal' => 'Boolean',
     ];
 
     /**
@@ -264,6 +266,17 @@ class ElementalLinks extends BaseElement
             ->isEqualTo('cards')
             ->orIf("Subtype")->isEqualTo("carousel");
 
+        // Card orientation selector
+        $cardHorizontal = CheckboxField::create(
+            'CardHorizontal',
+            _t(
+                self::class . '.CARDHORIZONTAL',
+                'Horizontal card layout'
+            )
+        );
+        $cardHorizontal->displayIf('Subtype')
+            ->isEqualTo('cards');
+
         /**
          * via ElementChildGridExtension
          */
@@ -272,7 +285,8 @@ class ElementalLinks extends BaseElement
             [
                 $subType,
                 $cardColumns,
-                $cardStyle
+                $cardStyle,
+                $cardHorizontal
             ]
         );
 
