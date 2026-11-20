@@ -78,6 +78,13 @@ class ElementalLinks extends BaseElement
         'title-image-abstract' => 'Title, image, abstract',
     ];
 
+    private static array $card_brand = [
+        // '' => 'White',
+        'light' => 'Light',
+        'dark' => 'Dark',
+        'highlight' => 'Highlight',
+    ];
+
     /**
      * @inheritdoc
      */
@@ -86,6 +93,7 @@ class ElementalLinks extends BaseElement
         'Subtype' => 'Varchar(64)',
         'CardStyle' => 'Varchar(64)',
         'CardHorizontal' => 'Boolean',
+        'CardBrand' => 'Varchar(64)',
     ];
 
     /**
@@ -266,6 +274,19 @@ class ElementalLinks extends BaseElement
             ->isEqualTo('cards')
             ->orIf("Subtype")->isEqualTo("carousel");
 
+        // Card brand selector
+        $cardBrand = DropdownField::create(
+            'CardBrand',
+            _t(
+                self::class . '.CARDBRAND',
+                'Card brand'
+            ),
+            $this->owner->config()->get('card_brand')
+        )->setEmptyString('none');
+        $cardBrand->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
+
         // Card orientation selector
         $cardHorizontal = CheckboxField::create(
             'CardHorizontal',
@@ -275,7 +296,8 @@ class ElementalLinks extends BaseElement
             )
         );
         $cardHorizontal->displayIf('Subtype')
-            ->isEqualTo('cards');
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
 
         /**
          * via ElementChildGridExtension
@@ -286,6 +308,7 @@ class ElementalLinks extends BaseElement
                 $subType,
                 $cardColumns,
                 $cardStyle,
+                $cardBrand,
                 $cardHorizontal
             ]
         );
