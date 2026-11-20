@@ -27,6 +27,8 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
  * @method \SilverStripe\ORM\ManyManyList<\gorriecoe\Link\Models\Link> ElementLinks()
  * @method \SilverStripe\ORM\HasManyList<\SilverStripe\LinkField\Models\Link> CoreElementLinks()
  * @mixin \NSWDPC\GridHelper\Extensions\ElementChildGridExtension
+ * @property bool $CardHorizontal
+ * @property ?string $CardBrand
  */
 class ElementalLinks extends BaseElement
 {
