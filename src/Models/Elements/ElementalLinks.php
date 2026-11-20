@@ -5,12 +5,13 @@ namespace NSWDPC\Elemental\Models\LinksBlock;
 use DNADesign\Elemental\Models\BaseElement;
 use gorriecoe\Link\Models\Link;
 use gorriecoe\LinkField\LinkField;
+use SilverStripe\LinkField\Models\Link as CoreLink;
+use SilverStripe\LinkField\Form\MultiLinkField as CoreMultiLinkField;
 use NSWDPC\GridHelper\Models\Configuration;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use SilverStripe\ORM\ManyManyList;
-use SilverStripe\ORM\UnsavedRelationList;
 
 /**
  * Links element
@@ -24,7 +25,10 @@ use SilverStripe\ORM\UnsavedRelationList;
  * @property ?string $Subtype
  * @property ?string $CardStyle
  * @method \SilverStripe\ORM\ManyManyList<\gorriecoe\Link\Models\Link> ElementLinks()
+ * @method \SilverStripe\ORM\HasManyList<\SilverStripe\LinkField\Models\Link> CoreElementLinks()
  * @mixin \NSWDPC\GridHelper\Extensions\ElementChildGridExtension
+ * @property bool $CardHorizontal
+ * @property ?string $CardBrand
  */
 class ElementalLinks extends BaseElement
 {
@@ -76,6 +80,13 @@ class ElementalLinks extends BaseElement
         'title-image-abstract' => 'Title, image, abstract',
     ];
 
+    private static array $card_brand = [
+        // '' => 'White',
+        'light' => 'Light',
+        'dark' => 'Dark',
+        'highlight' => 'Highlight',
+    ];
+
     /**
      * @inheritdoc
      */
@@ -83,6 +94,8 @@ class ElementalLinks extends BaseElement
         'HTML' => 'HTMLText',
         'Subtype' => 'Varchar(64)',
         'CardStyle' => 'Varchar(64)',
+        'CardHorizontal' => 'Boolean',
+        'CardBrand' => 'Varchar(64)',
     ];
 
     /**
@@ -90,6 +103,23 @@ class ElementalLinks extends BaseElement
      */
     private static array $many_many = [
         'ElementLinks' => Link::class
+    ];
+
+    private static array $has_many = [
+        // migrated links
+        'CoreElementLinks' => CoreLink::class . '.Owner'
+    ];
+
+    private static array $owns = [
+        'CoreElementLinks'
+    ];
+
+    private static array $cascade_deletes = [
+        'CoreElementLinks',
+    ];
+
+    private static array $cascade_duplicates = [
+        'CoreElementLinks',
     ];
 
     /**
@@ -111,21 +141,57 @@ class ElementalLinks extends BaseElement
     }
 
     /**
-     * Override default list value returned to ensure sorted by the many_many relation field
-     * @return ManyManyList|UnsavedRelationList
+     * Template method calling getElementLinks()
      */
     public function ElementLinks()
+    {
+        return $this->getElementLinks();
+    }
+
+    /**
+     * Override default list value returned to ensure sorted by the many_many relation field
+     */
+    public function getElementLinks()
     {
         $links = $this->getManyManyComponents('ElementLinks');
         return $links->orderBy('"ElementalLinks_ElementLinks"."Sort" ASC');
     }
 
     /**
-     * Getter for ElementLinks
+     * Template method for getDerivedElementLinksList()
      */
-    public function getElementLinks()
+    public function DerivedElementLinksList(): \SilverStripe\Model\List\SS_List
     {
-        return $this->ElementLinks();
+        return $this->getDerivedElementLinksList();
+    }
+
+    /**
+     * Returns the relevant list of links
+     */
+    public function getDerivedElementLinksList(): \SilverStripe\Model\List\SS_List
+    {
+
+        $coreLinks = $this->CoreElementLinks()->sort(['Sort' => 'ASC']);
+        $unmigratedLinks = $this->ElementLinks()->filter(['IsMigrated' => 0]);
+        if ($unmigratedLinks->count() == 0) {
+            // all migrated, show all core links found
+            return $coreLinks;
+        }
+
+        $result = \SilverStripe\Model\List\ArrayList::create();
+        // get all new 'core' record links
+        foreach ($coreLinks as $coreLink) {
+            $result->push($coreLink);
+        }
+
+        // add on any unmigrated records
+        foreach ($unmigratedLinks as $unmigratedLink) {
+            // not yet migrated
+            $result->push($unmigratedLink);
+        }
+
+        // return sorted result
+        return $result->sort(['Sort' => 'ASC']);
     }
 
     /**
@@ -159,11 +225,15 @@ class ElementalLinks extends BaseElement
                 LinkField::create(
                     'ElementLinks',
                     _t(
-                        self::class . '.LINKS',
-                        'Links'
+                        self::class . '.LINKS_LEGACY',
+                        'Links (legacy)'
                     ),
                     $this
-                )->setSortColumn('Sort')
+                )->setSortColumn('Sort'),
+                CoreMultiLinkField::create(
+                    'CoreElementLinks',
+                    _t('nswds.LINKS_NEW', 'Links (new)')
+                )
             ]
         );
 
@@ -206,6 +276,31 @@ class ElementalLinks extends BaseElement
             ->isEqualTo('cards')
             ->orIf("Subtype")->isEqualTo("carousel");
 
+        // Card brand selector
+        $cardBrand = DropdownField::create(
+            'CardBrand',
+            _t(
+                self::class . '.CARDBRAND',
+                'Card brand'
+            ),
+            $this->owner->config()->get('card_brand')
+        )->setEmptyString('none');
+        $cardBrand->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
+
+        // Card orientation selector
+        $cardHorizontal = CheckboxField::create(
+            'CardHorizontal',
+            _t(
+                self::class . '.CARDHORIZONTAL',
+                'Horizontal card layout'
+            )
+        );
+        $cardHorizontal->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
+
         /**
          * via ElementChildGridExtension
          */
@@ -214,7 +309,9 @@ class ElementalLinks extends BaseElement
             [
                 $subType,
                 $cardColumns,
-                $cardStyle
+                $cardStyle,
+                $cardBrand,
+                $cardHorizontal
             ]
         );
 

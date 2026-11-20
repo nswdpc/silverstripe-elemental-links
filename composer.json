@@ -19,7 +19,7 @@
     ],
     "require": {
         "dnadesign/silverstripe-elemental": "^6",
-        "nswdpc/silverstripe-linkfield": "^2",
+        "nswdpc/silverstripe-linkfield": "dev-feat-link-migrator-staged as 2.1.0",
         "unclecheese/display-logic": "^4",
         "nswdpc/silverstripe-grid-helpers": "^2"
     },
