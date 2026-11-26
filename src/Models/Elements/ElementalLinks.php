@@ -10,6 +10,7 @@ use SilverStripe\LinkField\Form\MultiLinkField as CoreMultiLinkField;
 use NSWDPC\GridHelper\Models\Configuration;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 
 /**
@@ -26,6 +27,8 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
  * @method \SilverStripe\ORM\ManyManyList<\gorriecoe\Link\Models\Link> ElementLinks()
  * @method \SilverStripe\ORM\HasManyList<\SilverStripe\LinkField\Models\Link> CoreElementLinks()
  * @mixin \NSWDPC\GridHelper\Extensions\ElementChildGridExtension
+ * @property bool $CardHorizontal
+ * @property ?string $CardBrand
  */
 class ElementalLinks extends BaseElement
 {
@@ -77,6 +80,13 @@ class ElementalLinks extends BaseElement
         'title-image-abstract' => 'Title, image, abstract',
     ];
 
+    private static array $card_brand = [
+        // '' => 'White',
+        'light' => 'Light',
+        'dark' => 'Dark',
+        'highlight' => 'Highlight',
+    ];
+
     /**
      * @inheritdoc
      */
@@ -84,6 +94,8 @@ class ElementalLinks extends BaseElement
         'HTML' => 'HTMLText',
         'Subtype' => 'Varchar(64)',
         'CardStyle' => 'Varchar(64)',
+        'CardHorizontal' => 'Boolean',
+        'CardBrand' => 'Varchar(64)',
     ];
 
     /**
@@ -264,6 +276,31 @@ class ElementalLinks extends BaseElement
             ->isEqualTo('cards')
             ->orIf("Subtype")->isEqualTo("carousel");
 
+        // Card brand selector
+        $cardBrand = DropdownField::create(
+            'CardBrand',
+            _t(
+                self::class . '.CARDBRAND',
+                'Card brand'
+            ),
+            $this->owner->config()->get('card_brand')
+        )->setEmptyString('none');
+        $cardBrand->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
+
+        // Card orientation selector
+        $cardHorizontal = CheckboxField::create(
+            'CardHorizontal',
+            _t(
+                self::class . '.CARDHORIZONTAL',
+                'Horizontal card layout'
+            )
+        );
+        $cardHorizontal->displayIf('Subtype')
+            ->isEqualTo('cards')
+            ->orIf("Subtype")->isEqualTo("carousel");
+
         /**
          * via ElementChildGridExtension
          */
@@ -272,7 +309,9 @@ class ElementalLinks extends BaseElement
             [
                 $subType,
                 $cardColumns,
-                $cardStyle
+                $cardStyle,
+                $cardBrand,
+                $cardHorizontal
             ]
         );
 
