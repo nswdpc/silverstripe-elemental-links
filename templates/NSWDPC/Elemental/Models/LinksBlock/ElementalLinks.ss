@@ -5,7 +5,7 @@
         <% end_if %>
 	   {$HTML}
         <ul class="links-element__list">
-            <% loop $ElementLinks %>
+            <% loop $DerivedElementLinksList %>
                 <li>
                     <a href="{$LinkURL}">{$Title}</a>
                 </li>
