@@ -7,7 +7,7 @@
         <ul class="links-element__list">
             <% loop $DerivedElementLinksList %>
                 <li>
-                    <a href="{$LinkURL}">{$Title}</a>
+                    <a href="{$URL}" rel="noopener noreferrer"<% if $OpenInNew %> target="_blank"<% end_if %>>{$Title}</a>
                 </li>
             <% end_loop %>
         </ul>

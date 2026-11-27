@@ -3,8 +3,6 @@
 namespace NSWDPC\Elemental\Models\LinksBlock;
 
 use DNADesign\Elemental\Models\BaseElement;
-use gorriecoe\Link\Models\Link;
-use gorriecoe\LinkField\LinkField;
 use SilverStripe\LinkField\Models\Link as CoreLink;
 use SilverStripe\LinkField\Form\MultiLinkField as CoreMultiLinkField;
 use NSWDPC\GridHelper\Models\Configuration;
@@ -23,7 +21,6 @@ use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
  * @property ?string $HTML
  * @property ?string $Subtype
  * @property ?string $CardStyle
- * @method \SilverStripe\ORM\ManyManyList<\gorriecoe\Link\Models\Link> ElementLinks()
  * @method \SilverStripe\ORM\HasManyList<\SilverStripe\LinkField\Models\Link> CoreElementLinks()
  * @mixin \NSWDPC\GridHelper\Extensions\ElementChildGridExtension
  */
@@ -86,15 +83,7 @@ class ElementalLinks extends BaseElement
         'CardStyle' => 'Varchar(64)',
     ];
 
-    /**
-     * @inheritdoc
-     */
-    private static array $many_many = [
-        'ElementLinks' => Link::class
-    ];
-
     private static array $has_many = [
-        // migrated links
         'CoreElementLinks' => CoreLink::class . '.Owner'
     ];
 
@@ -113,15 +102,6 @@ class ElementalLinks extends BaseElement
     /**
      * @inheritdoc
      */
-    private static array $many_many_extraFields = [
-        'ElementLinks' => [
-            'Sort' => 'Int'
-        ]
-    ];
-
-    /**
-     * @inheritdoc
-     */
     #[\Override]
     public function getType()
     {
@@ -131,7 +111,7 @@ class ElementalLinks extends BaseElement
     /**
      * Template method calling getElementLinks()
      */
-    public function ElementLinks()
+    public function ElementLinks(): \SilverStripe\Model\List\SS_List
     {
         return $this->getElementLinks();
     }
@@ -139,10 +119,9 @@ class ElementalLinks extends BaseElement
     /**
      * Override default list value returned to ensure sorted by the many_many relation field
      */
-    public function getElementLinks()
+    public function getElementLinks(): \SilverStripe\Model\List\SS_List
     {
-        $links = $this->getManyManyComponents('ElementLinks');
-        return $links->orderBy('"ElementalLinks_ElementLinks"."Sort" ASC');
+        return $this->getDerivedElementLinksList();
     }
 
     /**
@@ -159,27 +138,7 @@ class ElementalLinks extends BaseElement
     public function getDerivedElementLinksList(): \SilverStripe\Model\List\SS_List
     {
 
-        $coreLinks = $this->CoreElementLinks()->sort(['Sort' => 'ASC']);
-        $unmigratedLinks = $this->ElementLinks()->filter(['IsMigrated' => 0]);
-        if ($unmigratedLinks->count() == 0) {
-            // all migrated, show all core links found
-            return $coreLinks;
-        }
-
-        $result = \SilverStripe\Model\List\ArrayList::create();
-        // get all new 'core' record links
-        foreach ($coreLinks as $coreLink) {
-            $result->push($coreLink);
-        }
-
-        // add on any unmigrated records
-        foreach ($unmigratedLinks as $unmigratedLink) {
-            // not yet migrated
-            $result->push($unmigratedLink);
-        }
-
-        // return sorted result
-        return $result->sort(['Sort' => 'ASC']);
+        return $this->CoreElementLinks()->sort(['Sort' => 'ASC']);
     }
 
     /**
@@ -198,8 +157,6 @@ class ElementalLinks extends BaseElement
     {
         $fields = parent::getCmsFields();
 
-        $fields->removeByName(['ElementLinks']);
-
         $fields->addFieldsToTab(
             'Root.Main',
             [
@@ -210,14 +167,6 @@ class ElementalLinks extends BaseElement
                         'Content'
                     )
                 )->setRows(4),
-                LinkField::create(
-                    'ElementLinks',
-                    _t(
-                        self::class . '.LINKS_LEGACY',
-                        'Links (legacy)'
-                    ),
-                    $this
-                )->setSortColumn('Sort'),
                 CoreMultiLinkField::create(
                     'CoreElementLinks',
                     _t('nswds.LINKS_NEW', 'Links (new)')
